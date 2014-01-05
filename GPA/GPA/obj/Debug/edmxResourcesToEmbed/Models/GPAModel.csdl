@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="GPAModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="GPAModelContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Users" EntityType="GPAModel.User" />
+    <EntitySet Name="Courses" EntityType="GPAModel.Course" />
+    <EntitySet Name="Feedbacks" EntityType="GPAModel.Feedback" />
+    <AssociationSet Name="UserFeedback" Association="GPAModel.UserFeedback">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Feedback" EntitySet="Feedbacks" />
+    </AssociationSet>
+    <EntitySet Name="Grades" EntityType="GPAModel.Grade" />
+    <EntitySet Name="UserDetails" EntityType="GPAModel.UserDetails" />
+    <EntitySet Name="Student_GPA" EntityType="GPAModel.Student_GPA" />
+    <AssociationSet Name="UserStudent_GPA" Association="GPAModel.UserStudent_GPA">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Student_GPA" EntitySet="Student_GPA" />
+    </AssociationSet>
+    <AssociationSet Name="Student_GPACourse" Association="GPAModel.Student_GPACourse">
+      <End Role="Student_GPA" EntitySet="Student_GPA" />
+      <End Role="Course" EntitySet="Courses" />
+    </AssociationSet>
+    <AssociationSet Name="GradeStudent_GPA" Association="GPAModel.GradeStudent_GPA">
+      <End Role="Grade" EntitySet="Grades" />
+      <End Role="Student_GPA" EntitySet="Student_GPA" />
+    </AssociationSet>
+    <EntitySet Name="UserRoles" EntityType="GPAModel.UserRole" />
+    <AssociationSet Name="UserUserRole" Association="GPAModel.UserUserRole">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <EntitySet Name="Roles" EntityType="GPAModel.Role" />
+    <AssociationSet Name="RoleUserRole" Association="GPAModel.RoleUserRole">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <EntitySet Name="Tasks" EntityType="GPAModel.Task" />
+    <AssociationSet Name="RoleTask" Association="GPAModel.RoleTask">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="Task" EntitySet="Tasks" />
+    </AssociationSet>
+    <AssociationSet Name="UserUserDetails" Association="GPAModel.UserUserDetails">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserDetails" EntitySet="UserDetails" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" Nullable="false" />
+    <Property Name="Password" Type="String" Nullable="false" />
+    <Property Name="VerificationCode" Type="String" Nullable="true" />
+    <NavigationProperty Name="Feedbacks" Relationship="GPAModel.UserFeedback" FromRole="User" ToRole="Feedback" />
+    <NavigationProperty Name="Student_GPA" Relationship="GPAModel.UserStudent_GPA" FromRole="User" ToRole="Student_GPA" />
+    <NavigationProperty Name="UserRoles" Relationship="GPAModel.UserUserRole" FromRole="User" ToRole="UserRole" />
+    <NavigationProperty Name="UserDetail" Relationship="GPAModel.UserUserDetails" FromRole="User" ToRole="UserDetails" />
+  </EntityType>
+  <EntityType Name="Course">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SubCode" Type="String" Nullable="false" />
+    <Property Name="Level" Type="String" Nullable="false" />
+    <Property Name="CourseName" Type="String" Nullable="false" />
+    <Property Name="Credit" Type="String" Nullable="false" />
+    <NavigationProperty Name="Student_GPA" Relationship="GPAModel.Student_GPACourse" FromRole="Course" ToRole="Student_GPA" />
+  </EntityType>
+  <EntityType Name="Feedback">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Comment" Type="String" Nullable="false" />
+    <NavigationProperty Name="User" Relationship="GPAModel.UserFeedback" FromRole="Feedback" ToRole="User" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="UserFeedback">
+    <End Type="GPAModel.User" Role="User" Multiplicity="1" />
+    <End Type="GPAModel.Feedback" Role="Feedback" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Feedback">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Grade">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GradeScore" Type="String" Nullable="false" />
+    <Property Name="GPA" Type="String" Nullable="false" />
+    <NavigationProperty Name="Student_GPA" Relationship="GPAModel.GradeStudent_GPA" FromRole="Grade" ToRole="Student_GPA" />
+  </EntityType>
+  <EntityType Name="UserDetails">
+    <Key>
+      <PropertyRef Name="UserDetail_ID" />
+    </Key>
+    <Property Name="Email" Type="String" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" />
+    <Property Name="Address" Type="String" Nullable="true" />
+    <Property Name="City" Type="String" Nullable="true" />
+    <Property Name="State" Type="String" Nullable="true" />
+    <Property Name="Zip" Type="String" Nullable="true" />
+    <Property Name="Status" Nullable="true" Type="Int32" />
+    <Property Name="UserDetail_ID" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Student_GPA">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="CourseId" />
+    </Key>
+    <NavigationProperty Name="User" Relationship="GPAModel.UserStudent_GPA" FromRole="Student_GPA" ToRole="User" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Course" Relationship="GPAModel.Student_GPACourse" FromRole="Student_GPA" ToRole="Course" />
+    <Property Name="CourseId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Grade" Relationship="GPAModel.GradeStudent_GPA" FromRole="Student_GPA" ToRole="Grade" />
+    <Property Name="GradeId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="UserStudent_GPA">
+    <End Type="GPAModel.User" Role="User" Multiplicity="1" />
+    <End Type="GPAModel.Student_GPA" Role="Student_GPA" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Student_GPA">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Student_GPACourse">
+    <End Type="GPAModel.Student_GPA" Role="Student_GPA" Multiplicity="*" />
+    <End Type="GPAModel.Course" Role="Course" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Student_GPA">
+        <PropertyRef Name="CourseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="GradeStudent_GPA">
+    <End Type="GPAModel.Grade" Role="Grade" Multiplicity="1" />
+    <End Type="GPAModel.Student_GPA" Role="Student_GPA" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Grade">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Student_GPA">
+        <PropertyRef Name="GradeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="User" Relationship="GPAModel.UserUserRole" FromRole="UserRole" ToRole="User" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Role" Relationship="GPAModel.RoleUserRole" FromRole="UserRole" ToRole="Role" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="UserUserRole">
+    <End Type="GPAModel.User" Role="User" Multiplicity="1" />
+    <End Type="GPAModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" />
+    <NavigationProperty Name="UserRoles" Relationship="GPAModel.RoleUserRole" FromRole="Role" ToRole="UserRole" />
+    <NavigationProperty Name="Tasks" Relationship="GPAModel.RoleTask" FromRole="Role" ToRole="Task" />
+  </EntityType>
+  <Association Name="RoleUserRole">
+    <End Type="GPAModel.Role" Role="Role" Multiplicity="1" />
+    <End Type="GPAModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Task">
+    <Key>
+      <PropertyRef Name="TaskId" />
+    </Key>
+    <Property Name="TaskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" />
+    <NavigationProperty Name="Roles" Relationship="GPAModel.RoleTask" FromRole="Task" ToRole="Role" />
+    <Property Name="Description" Type="String" Nullable="false" />
+  </EntityType>
+  <Association Name="RoleTask">
+    <End Type="GPAModel.Role" Role="Role" Multiplicity="*" />
+    <End Type="GPAModel.Task" Role="Task" Multiplicity="*" />
+  </Association>
+  <Association Name="UserUserDetails">
+    <End Type="GPAModel.User" Role="User" Multiplicity="1" />
+    <End Type="GPAModel.UserDetails" Role="UserDetails" Multiplicity="1" />
+  </Association>
+</Schema>
